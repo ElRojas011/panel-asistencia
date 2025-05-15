@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel de Asistencias</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>Panel de Asistencias</h1>
+  <table id="tabla-asistencias">
+    <thead></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1A827oeTDeQHRcC1-SUJF6M7OoJ3Kvfv2_eHAIvWBtY5dT5EPXwKN60okFrbz1cUjqb4cb7NSqcLN/pub?output=csv";
+
+    fetch(urlCSV)
+      .then(response => response.text())
+      .then(data => {
+        const filas = data.trim().split('\n').map(linea => linea.split(','));
+        const thead = document.querySelector('#tabla-asistencias thead');
+        const tbody = document.querySelector('#tabla-asistencias tbody');
+
+        // Crear encabezado
+        const encabezado = filas[0];
+        let filaHead = document.createElement('tr');
+        encabezado.forEach(col => {
+          const th = document.createElement('th');
+          th.textContent = col;
+          filaHead.appendChild(th);
+        });
+        thead.appendChild(filaHead);
+
+        // Crear filas de datos
+        for (let i = 1; i < filas.length; i++) {
+          let fila = document.createElement('tr');
+          filas[i].forEach(celda => {
+            let td = document.createElement('td');
+            td.textContent = celda;
+            fila.appendChild(td);
+          });
+          tbody.appendChild(fila);
+        }
+      })
+      .catch(error => {
+        console.error('Error al cargar la hoja:', error);
+      });
+  </script>
+</body>
+</html>
